@@ -72,12 +72,6 @@
       <input type="number" id="numTeams" min="2" max="10" placeholder="Enter the number of teams">
     </div>
 
-    <!-- Custom Team Names -->
-    <div>
-      <label for="teamNames">Enter Team Names (optional, comma-separated):</label>
-      <input type="text" id="teamNames" placeholder="e.g., Team Alpha, Team Beta">
-    </div>
-
     <!-- Period Selector -->
     <div>
       <label for="period">Select Period:</label>
@@ -85,6 +79,11 @@
         <option value="1">Period 1</option>
         <option value="2">Period 2</option>
         <option value="3">Period 3</option>
+        <option value="4">Period 4</option>
+        <option value="5">Period 5</option>
+        <option value="6">Period 6</option>
+        <option value="7">Period 7</option>
+        <option value="8">Period 8</option>
       </select>
     </div>
 
@@ -98,7 +97,6 @@
     document.getElementById('generateBtn').addEventListener('click', () => {
       const participantsInput = document.getElementById('participants').value.trim();
       const numTeams = parseInt(document.getElementById('numTeams').value, 10);
-      const teamNamesInput = document.getElementById('teamNames').value.trim();
       const period = document.getElementById('period').value;
 
       if (!participantsInput) {
@@ -130,15 +128,11 @@
         teams[index % numTeams].push(p);
       });
 
-      const teamNames = teamNamesInput
-        ? teamNamesInput.split(',').map(name => name.trim())
-        : Array.from({ length: numTeams }, (_, i) => `Team ${i + 1}`);
-
       // Output Teams
       const teamsOutput = document.getElementById('teamsOutput');
       teamsOutput.innerHTML = `<h2>Teams for Period ${period}:</h2>`;
       teams.forEach((team, i) => {
-        teamsOutput.innerHTML += `<h3>${teamNames[i]}</h3><ul>${team
+        teamsOutput.innerHTML += `<h3>Team ${i + 1}</h3><ul>${team
           .map(p => `<li>${p.name} (Skill: ${p.skill})</li>`)
           .join('')}</ul>`;
       });

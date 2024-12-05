@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill-Based Team Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    textarea, input, select, button {
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #teamsOutput {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Skill-Based Team Generator</h1>
+    
+    <!-- Input for Participants -->
+    <div>
+      <label for="participants">Enter Participants (Name:Skill):</label>
+      <textarea id="participants" placeholder="e.g., Alice:8, Bob:5, Charlie:7"></textarea>
+    </div>
+
+    <!-- Number of Teams -->
+    <div>
+      <label for="numTeams">Number of Teams:</label>
+      <input type="number" id="numTeams" min="2" max="10" placeholder="Enter the number of teams">
+    </div>
+
+    <!-- Custom Team Names -->
+    <div>
+      <label for="teamNames">Enter Team Names (optional, comma-separated):</label>
+      <input type="text" id="teamNames" placeholder="e.g., Team Alpha, Team Beta">
+    </div>
+
+    <!-- Period Selector -->
+    <div>
+      <label for="period">Select Period:</label>
+      <select id="period">
+        <option value="1">Period 1</option>
+        <option value="2">Period 2</option>
+        <option value="3">Period 3</option>
+      </select>
+    </div>
+
+    <!-- Generate Button -->
+    <button id="generateBtn">Generate Teams</button>
+
+    <!-- Output for Teams -->
+    <div id="teamsOutput"></div>
+  </div>
+  <script>
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      const participantsInput = document.getElementById('participants').value.trim();
+      const numTeams = parseInt(document.getElementById('numTeams').value, 10);
+      const teamNamesInput = document.getElementById('teamNames').value.trim();
+      const period = document.getElementById('period').value;
+
+      if (!participantsInput) {
+        alert('Please enter participant names and skills.');
+        return;
+      }
+
+      if (isNaN(numTeams) || numTeams < 2) {
+        alert('Please enter a valid number of teams (at least 2).');
+        return;
+      }
+
+      const participants = participantsInput
+        .split(',')
+        .map(p => {
+          const [name, skill] = p.split(':').map(s => s.trim());
+          return { name, skill: parseInt(skill, 10) };
+        });
+
+      if (participants.some(p => isNaN(p.skill))) {
+        alert('Please ensure all participants have valid skill levels.');
+        return;
+      }
+
+      participants.sort((a, b) => b.skill - a.skill); // Sort by skill descending
+
+      const teams = Array.from({ length: numTeams }, () => []);
+      participants.forEach((p, index) => {
+        teams[index % numTeams].push(p);
+      });
+
+      const teamNames = teamNamesInput
+        ? teamNamesInput.split(',').map(name => name.trim())
+        : Array.from({ length: numTeams }, (_, i) => `Team ${i + 1}`);
+
+      // Output Teams
+      const teamsOutput = document.getElementById('teamsOutput');
+      teamsOutput.innerHTML = `<h2>Teams for Period ${period}:</h2>`;
+      teams.forEach((team, i) => {
+        teamsOutput.innerHTML += `<h3>${teamNames[i]}</h3><ul>${team
+          .map(p => `<li>${p.name} (Skill: ${p.skill})</li>`)
+          .join('')}</ul>`;
+      });
+    });
+  </script>
+</body>
+</html>
